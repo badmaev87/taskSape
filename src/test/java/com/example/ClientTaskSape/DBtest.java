@@ -2,6 +2,7 @@ package com.example.ClientTaskSape;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -15,8 +16,6 @@ import java.sql.Statement;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {CsvFileUploaderApplication.class})
 public class DBtest {
-
-    private static String JDBC_URL ="jdbc:h2:mem:testdb";
     private static DataSource dataSource = null;
 
     public static DataSource getDataSource() {
@@ -24,9 +23,12 @@ public class DBtest {
     }
 
     @BeforeClass
-    public static void initDb() throws SQLException {
+    public static void initDb() {
+        dataSource = JdbcConnectionPool.create("jdbc:h2:mem:testdb", "sa", "");
+    }
 
-        dataSource = JdbcConnectionPool.create(JDBC_URL, "sa", "");
+    @Test
+    public void testCountTablesWithRequest() throws SQLException {
         Connection conn = getDataSource().getConnection();
         Statement stat = conn.createStatement();
 
@@ -40,6 +42,5 @@ public class DBtest {
             System.out.println(exception.getErrorCode());
         }
     }
-
     }
 
